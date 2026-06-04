@@ -1,30 +1,38 @@
-# Apex Retail — Store Intelligence
+# Store Customer Detection
 
-End-to-end pipeline: **CCTV clips → person detection → structured events → REST API → live dashboard**.
+Built for the Purplle Tech Challenge Round 2.
 
-Built for the Purplle Tech Challenge dataset (2 stores, short clips, POS sample CSV).
-
-## Quick start (5 commands)
+## Quick Start (Docker)
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/yashvi-raghuvanshi/Purplle-Tech-Challenge
 cd "Purplle Tech Challenge"
 docker compose up -d --build
 docker compose --profile demo run --rm seed
-curl http://localhost:8000/health | jq
-curl http://localhost:8000/stores/STORE_001/metrics | jq
-open http://localhost:8000/dashboard
+```
+## Verify
+``` bash
+curl http://localhost:8000/health
+
+curl http://localhost:8000/stores/STORE_001/metrics
 ```
 
-**Web dashboard:** http://localhost:8000/dashboard — live metrics, funnel, heatmap, and anomalies (refreshes every 2s).
+### Open Web dashboard in browser:
+http://localhost:8000/dashboard
 
-## Run detection on your clips
-
+## Run Tests
 ```bash
-# Local (requires Python 3.11 + deps)
+pip install -r requirements.txt
+pytest tests/ -v
+
+
+# Run Detection (optional)
 pip install -r requirements-detection.txt
 python -m detection.run --store STORE_001 --output data/events_store1.jsonl
+```
 
+## Advanced
+``` bash
 # Ingest into API
 pip install -r requirements.txt
 uvicorn api.main:app --reload &
@@ -37,11 +45,10 @@ httpx.post('http://localhost:8000/events/ingest', json={'events': events}, timeo
 
 # Or via Docker profile (runs Store 1 pipeline + ingest)
 docker compose --profile pipeline up detection
-```
+
 
 ### Live / simulated real-time
 
-```bash
 python -m detection.run --store STORE_001 --realtime --ingest-url http://localhost:8000
 # Open web UI (updates as events ingest):
 open http://localhost:8000/dashboard
