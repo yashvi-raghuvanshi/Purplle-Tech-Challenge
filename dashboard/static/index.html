@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Store Intelligence — Live Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <span class="logo">◉</span>
+      <div>
+        <h1>Store Intelligence</h1>
+        <p class="subtitle">Live metrics from detection pipeline</p>
+      </div>
+    </div>
+    <div class="controls">
+      <label for="store-select">Store</label>
+      <select id="store-select">
+        <option value="STORE_001">Store 1 (STORE_001)</option>
+        <option value="STORE_002">Store 2 (STORE_002)</option>
+      </select>
+      <span id="feed-status" class="badge badge--ok">LIVE</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card card--wide metrics">
+      <h2>Today&apos;s metrics</h2>
+      <div class="metric-row">
+        <div class="metric">
+          <span class="metric-label">Unique visitors</span>
+          <span class="metric-value" id="m-visitors">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Conversion rate</span>
+          <span class="metric-value" id="m-conversion">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Queue depth</span>
+          <span class="metric-value" id="m-queue">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Abandonment rate</span>
+          <span class="metric-value" id="m-abandon">—</span>
+        </div>
+      </div>
+      <p class="meta" id="m-meta">Waiting for data…</p>
+    </section>
+
+    <section class="card">
+      <h2>Conversion funnel</h2>
+      <div id="funnel" class="funnel"></div>
+    </section>
+
+    <section class="card">
+      <h2>Zone heatmap</h2>
+      <p class="hint" id="heatmap-confidence"></p>
+      <div id="heatmap" class="heatmap"></div>
+    </section>
+
+    <section class="card card--wide">
+      <h2>Active anomalies</h2>
+      <ul id="anomalies" class="anomalies"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span id="last-updated">—</span>
+    <span>Refreshes every 2s · <a href="/docs">API docs</a></span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

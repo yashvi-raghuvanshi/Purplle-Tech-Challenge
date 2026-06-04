@@ -1,0 +1,55 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - "./POS - sample transactionsb1e826f.csv:/app/pos.csv:ro"
+    environment:
+      DATABASE_URL: sqlite:////app/data/store_intel.db
+      POS_CSV_PATH: /app/pos.csv
+      LOG_LEVEL: INFO
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - ./scripts:/app/scripts:ro
+    environment:
+      DATABASE_URL: sqlite:////app/data/store_intel.db
+    entrypoint: ["python", "/app/scripts/seed_demo_events.py", "http://api:8000"]
+    profiles: ["demo"]
+
+  detection:
+    build:
+      context: .
+      dockerfile: Dockerfile.detection
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    environment:
+      INGEST_URL: http://api:8000
+    command: >
+      python -m detection.run
+      --store STORE_001
+      --output /app/data/events_store1.jsonl
+      --ingest-url http://api:8000
+    profiles: ["pipeline"]
+
+  # Web dashboard is served by the API at http://localhost:8000/dashboard
+  # Terminal dashboard (optional):
+  #   docker compose run --rm -e API_URL=http://api:8000 api python dashboard/live_dashboard.py

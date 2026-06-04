@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-detection.txt .
+RUN pip install --no-cache-dir -r requirements-detection.txt
+
+COPY shared/ shared/
+COPY detection/ detection/
+COPY store_layout.json .
+COPY scripts/ scripts/
+COPY "Store 1" "Store 1/"
+COPY "Store 2" "Store 2/"
+
+ENV PYTHONPATH=/app
+CMD ["python", "-m", "detection.run", "--store", "STORE_001", "--output", "/app/data/events.jsonl"]
