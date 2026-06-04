@@ -65,14 +65,7 @@ open http://localhost:8000/dashboard
 | GET | `/stores/{id}/anomalies` | Active anomalies with severity |
 | GET | `/health` | Service + per-store feed freshness |
 
-## Tests
 
-```bash
-pip install -r requirements.txt
-pytest tests/ -v
-# Integration assertions (API must be running):
-pytest assertions.py -v
-```
 
 ## Project layout
 
